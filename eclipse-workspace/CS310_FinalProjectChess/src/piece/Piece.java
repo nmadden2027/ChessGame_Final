@@ -179,8 +179,7 @@ public class Piece {
         }
         
         if (king == null) return false;
-        
-        // Check if any opponent piece can attack the king
+
         for (Piece p : GamePanel.simPieces) {
             if (p.color != kingColor) {
                 if (p.canMove(king.col, king.row)) {
@@ -191,57 +190,42 @@ public class Piece {
         
         return false;
     }
-    
-    /**
-     * Check if the king of given color is in checkmate
-     */
     public static boolean isCheckmate(int kingColor) {
         if (!isKingInCheck(kingColor)) {
-            return false; // Not even in check
+            return false; 
         }
-        
-        // Create a copy of the pieces to work with
+
         java.util.ArrayList<Piece> piecesCopy = new java.util.ArrayList<>(GamePanel.simPieces);
-        
-        // Try every possible move for all pieces of this color
+
         for (Piece p : piecesCopy) {
             if (p.color == kingColor) {
-                // Save original position
                 int originalCol = p.col;
                 int originalRow = p.row;
-                
-                // Try all squares
+
                 for (int c = 0; c < 8; c++) {
                     for (int r = 0; r < 8; r++) {
                         if (p.canMove(c, r)) {
-                            // Get the piece that would be captured
                             Piece capturedPiece = p.hittingP;
                             
-                            // Temporarily make the move
                             p.col = c;
                             p.row = r;
-                            
-                            // Temporarily remove captured piece from main list
+
                             if (capturedPiece != null) {
                                 int capturedIndex = GamePanel.simPieces.indexOf(capturedPiece);
                                 if (capturedIndex >= 0) {
                                     GamePanel.simPieces.remove(capturedIndex);
                                 }
                             }
-                            
-                            // Check if king is still in check
+    
                             boolean stillInCheck = isKingInCheck(kingColor);
-                            
-                            // Undo the move
+
                             p.col = originalCol;
                             p.row = originalRow;
-                            
-                            // Restore captured piece
+
                             if (capturedPiece != null) {
                                 GamePanel.simPieces.add(capturedPiece);
                             }
-                            
-                            // If this move gets us out of check, not checkmate
+
                             if (!stillInCheck) {
                                 return false;
                             }
@@ -250,8 +234,7 @@ public class Piece {
                 }
             }
         }
-        
-        // No legal moves can get out of check = checkmate
+ 
         return true;
     }
     public boolean isWithinBoard(int targetCol, int targetRow) {
